@@ -5,6 +5,13 @@
    새로고침해도 스크롤 위치 초기화
    ===================== */
 window.scrollTo(0, 0)
+// 페이지 로드 즉시 영상 음소거 상태로 재생 준비
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('video').forEach(v => {
+    v.muted = true
+    v.play().catch(() => {})
+  })
+})
 history.scrollRestoration = 'manual'
 document.body.classList.remove('entered')
 
@@ -77,6 +84,12 @@ document.querySelector('.loader').addEventListener('click', function () {
         hint.style.animation = 'none'
         hint.style.opacity = '0'
         hint.style.display = 'none'
+
+
+         document.querySelectorAll('video').forEach(v => {
+           v.muted = true
+           v.play().catch(() => {})
+         })
 
         gsap.to('.main-video', { opacity: 0.6, duration: 1.5, ease: 'power2.out' })
         gsap.to('.sub-text-main', { opacity: 1, duration: 0.6, ease: 'power2.out', delay: 0.1 })
