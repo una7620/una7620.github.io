@@ -22,14 +22,15 @@
     </nav>
 
     <div class="hero">
-      <!-- YouTube IFrame으로 grid 배경 영상 (로딩화면) -->
-      <div class="grid-video">
-        <div id="grid-player"></div>
-      </div>
-      <!-- YouTube IFrame으로 main 배경 영상 (메인화면) -->
-      <div class="main-video">
-        <div id="main-player"></div>
-      </div>
+      <!-- 로딩화면 배경 영상 -->
+      <video class="grid-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
+        <source src="grid.mp4" type="video/mp4">
+      </video>
+
+      <!-- 클릭 후 등장하는 메인 배경 영상 -->
+      <video class="main-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
+        <source src="main.mp4" type="video/mp4">
+      </video>
       <canvas id="stars"></canvas>
       <div class="main-content">
         <p class="sub-text-main">수원대학교 정보보호학과 · 25018067 이유나</p>
