@@ -1,0 +1,496 @@
+/* 모든 요소 기본 설정 - 한글 단어가 중간에 잘리지 않게 */
+* { word-break: keep-all; }
+
+/* 모든 요소의 기본 여백/패딩 제거, box-sizing = 크기 계산에 테두리 포함 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* =====================================================================
+   [body - 전체 페이지 기본 설정]
+   ===================================================================== */
+body {
+  background-color: #000000; /* 배경 검정 */
+  overflow-x: hidden; /* 가로 스크롤 숨김 */
+}
+
+/* JS에서 clicked 후 body에 entered 클래스 추가 → 그때부터 세로 스크롤 허용 */
+body.entered {
+  overflow-x: hidden;
+  overflow-y: auto; /* 스크롤 허용 */
+}
+
+/* =====================================================================
+   [.grid-video - 로딩화면 배경 영상]
+   HTML의 <video class="grid-video"> 요소
+   hero 섹션 전체를 덮는 배경 영상
+   ===================================================================== */
+.grid-video {
+  position: absolute; /* hero 섹션 기준으로 절대 위치 */
+  top: 0; left: 0; /* 좌상단에 붙임 */
+  width: 100%; height: 100%; /* 전체 크기 */
+  object-fit: cover; /* 영상이 잘려도 화면을 꽉 채움 */
+  z-index: 0; /* 맨 뒤에 위치 */
+}
+
+/* =====================================================================
+   [.page - 전체 페이지 컨테이너]
+   HTML의 <div class="page"> 요소
+   ===================================================================== */
+.page { position: relative; z-index: 1; width: 100%; }
+
+/* =====================================================================
+   [.hero - 메인 첫 화면]
+   HTML의 <div class="hero"> 요소
+   화면 전체 높이를 차지하는 첫 번째 섹션
+   ===================================================================== */
+.hero {
+  width: 100%;
+  height: 100vh; /* vh = 화면 높이의 100% */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden; /* 넘치는 요소 숨김 */
+}
+
+/* hero 하단에 검정 그라디언트 오버레이 (자연스러운 섹션 전환) */
+.hero::after {
+  content: ''; /* 가상 요소는 content 필수 */
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 200px;
+  background: linear-gradient(to bottom, transparent, #000000); /* 투명 → 검정 */
+  z-index: 2;
+}
+
+/* =====================================================================
+   [.main-video - 메인화면 배경 영상]
+   HTML의 <video class="main-video"> 요소
+   처음엔 투명(opacity:0), JS 클릭 후 나타남
+   ===================================================================== */
+.main-video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0; /* 처음엔 숨겨둠 - JS에서 클릭 후 opacity:0.6으로 변경 */
+}
+
+/* =====================================================================
+   [.main-content - 상단 텍스트 영역]
+   HTML의 <div class="main-content"> 요소
+   "수원대학교 정보보호학과 · 25018067 이유나" 텍스트
+   ===================================================================== */
+.main-content { padding: 40px; opacity: 0; position: relative; z-index: 3; }
+
+/* .sub-text-main - 상단 텍스트 스타일 */
+.sub-text-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 3px;
+  opacity: 0; /* 처음엔 숨겨둠 - JS에서 클릭 후 나타남 */
+}
+
+/* =====================================================================
+   [.loader - 로딩 오버레이]
+   HTML의 <div class="loader"> 요소
+   클릭 전까지 화면 전체를 덮는 레이어
+   position: fixed = 스크롤해도 항상 화면에 고정
+   z-index: 9999 = 모든 요소 위에 표시
+   ===================================================================== */
+.loader {
+  position: fixed; /* 화면에 고정 */
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 가장 위 레이어 */
+  cursor: pointer; /* 클릭 가능 커서 */
+  gap: 20px;
+  background-color: transparent;
+}
+
+/* =====================================================================
+   [.center-name - 로딩화면 LEE YUNA 글씨]
+   HTML의 <div class="center-name"> 요소
+   각 글자(span)가 float 애니메이션으로 둥둥 떠다님
+   ===================================================================== */
+.center-name { display: flex; align-items: center; opacity: 0; }
+
+.center-name span {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 120px;
+  font-weight: 300;
+  color: #ffffff;
+  letter-spacing: 8px;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite; /* float 애니메이션 무한 반복 */
+  text-shadow: /* 보라색 글로우 효과 3겹 */
+    0 0 10px rgba(212, 187, 239, 0.8),
+    0 0 20px rgba(212, 187, 239, 0.5),
+    0 0 40px rgba(212, 187, 239, 0.3);
+}
+
+/* 각 글자마다 애니메이션 시작 시간을 다르게 → 물결치는 효과 */
+.center-name span:nth-child(1) { animation-delay: 0s; }
+.center-name span:nth-child(2) { animation-delay: 0.2s; }
+.center-name span:nth-child(3) { animation-delay: 0.4s; }
+.center-name span:nth-child(4) { animation-delay: 0.6s; }
+.center-name span:nth-child(5) { animation-delay: 0.8s; }
+.center-name span:nth-child(6) { animation-delay: 1.0s; }
+.center-name span:nth-child(7) { animation-delay: 1.2s; }
+.center-name span:nth-child(8) { animation-delay: 1.4s; }
+
+/* float 애니메이션 = 위아래로 둥둥 떠다니며 살짝 흐려지는 효과 */
+@keyframes float {
+  0%   { transform: translateY(0px); filter: blur(0px); }
+  50%  { transform: translateY(-15px) translateX(-3px); filter: blur(1px); }
+  100% { transform: translateY(0px); filter: blur(0px); }
+}
+
+/* =====================================================================
+   [.click-hint - "click anywhere" 텍스트]
+   pulse 애니메이션으로 투명도가 계속 변함 → 깜빡이는 효과
+   JS에서 클릭 후 animation을 none으로 제거해서 완전히 숨김
+   ===================================================================== */
+.click-hint {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 6px;
+  opacity: 0;
+  animation: pulse 2s ease-in-out infinite; /* 깜빡임 애니메이션 */
+}
+
+/* pulse 애니메이션 = 투명도가 0.3 → 0.8 → 0.3 반복 */
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.8; }
+}
+
+/* =====================================================================
+   [.navbar - 네비게이션 바]
+   HTML의 <nav class="navbar"> 요소
+   처음엔 top: -80px (화면 위로 숨겨둠)
+   JS 클릭 후 top: 0으로 내려옴
+   position: fixed = 스크롤해도 상단에 고정
+   ===================================================================== */
+.navbar {
+  position: fixed;
+  top: -80px; /* 처음엔 화면 위로 숨김 - JS에서 top:0으로 변경 */
+  left: 0;
+  width: 100%;
+  padding: 30px 50px;
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  z-index: 100;
+  opacity: 0;
+}
+
+/* =====================================================================
+   [#stars - 별 반짝이는 캔버스]
+   HTML의 <canvas id="stars"> 요소
+   JS의 Canvas API로 별을 직접 그리는 요소
+   position: fixed = 스크롤해도 화면에 고정
+   pointer-events: none = 마우스 이벤트 무시 (클릭 방해 안 함)
+   ===================================================================== */
+#stars {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none; /* 이 요소는 클릭 이벤트 통과시킴 */
+  opacity: 0; /* 처음엔 숨김 - JS 클릭 후 나타남 */
+}
+
+/* =====================================================================
+   [.section - 섹션 공통 스타일]
+   About, Skills, Projects, Contact 섹션 모두 적용
+   ===================================================================== */
+.section { min-height: 100vh; padding: 120px 80px; position: relative; z-index: 2; }
+
+/* =====================================================================
+   [About 섹션]
+   HTML의 <section id="about" class="about-section">
+   z-index: 10 = Skills 섹션의 산 이미지보다 위에 표시
+   ===================================================================== */
+.about-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  background-color: #000000;
+  position: relative;
+  z-index: 10; /* 다른 섹션보다 위 */
+  padding: 220px 80px 120px;
+}
+
+/* About 타이틀의 <em> 태그 = 이탤릭 + 보라색으로 강조 */
+.about-title em { font-style: italic; font-weight: 350; color: #D4BBEF; }
+
+/* =====================================================================
+   [.particle - 스크롤 파티클]
+   JS에서 동적으로 생성되는 보라색 가루 효과
+   position: fixed = 화면 기준 절대 위치
+   pointer-events: none = 클릭 이벤트 방해 안 함
+   ===================================================================== */
+.particle {
+  position: fixed;
+  width: 6px; height: 6px;
+  border-radius: 50%; /* 원형 */
+  background: rgba(180, 100, 255, 1);
+  pointer-events: none;
+  z-index: 9998;
+  box-shadow: 0 0 6px rgba(180, 100, 255, 1), 0 0 12px rgba(180, 100, 255, 0.8); /* 빛나는 효과 */
+}
+
+/* =====================================================================
+   [Skills 섹션]
+   HTML의 <section id="skills" class="skills-section">
+   min-height: 600vh = 스크롤 공간 확보 (SVG 선 드로잉이 천천히 진행되도록)
+   overflow: hidden = SVG 선이 섹션 밖으로 나가지 않게 차단
+   ===================================================================== */
+.skills-section {
+  position: relative;
+  background-color: #000000;
+  min-height: 600vh; /* 화면 높이의 6배 = 긴 스크롤 공간 */
+  padding: 120px 80px;
+  overflow: hidden; /* 선이 밖으로 못 나감 */
+}
+
+/* SVG 선을 담는 컨테이너 - 섹션 전체 크기 */
+.skills-line {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* SVG path 초기 설정 - JS에서 실제 길이로 덮어씀 */
+#skillPath {
+  stroke-dasharray: 1000; /* 선 전체 길이 (JS에서 실제값으로 변경) */
+  stroke-dashoffset: 1000; /* 선 숨김 (JS에서 스크롤에 따라 줄임) */
+}
+
+/* 각 스킬 항목 - 처음엔 숨겨두고 JS에서 선이 도달하면 나타남 */
+.skill-item {
+  position: absolute; /* JS에서 top % 값으로 위치 지정 */
+  opacity: 0; /* 처음엔 숨김 */
+  transform: translateY(20px); /* 약간 아래에 있음 - 등장 시 위로 올라옴 */
+  z-index: 2;
+}
+
+.skill-left { left: 25%; } /* 왼쪽 정렬 항목 */
+.skill-right { right: 25%; text-align: right; } /* 오른쪽 정렬 항목 */
+
+/* =====================================================================
+   [달 + 핵심 문장 영역]
+   HTML의 <div class="skills-ending">
+   처음엔 opacity:0 → JS에서 스크롤 85% 도달 시 나타남
+   ===================================================================== */
+.skills-ending {
+  position: absolute;
+  bottom: 10%; left: 50%;
+  transform: translateX(-50%); /* 정확한 가운데 정렬 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  opacity: 0; /* 처음엔 숨김 */
+  z-index: 2;
+}
+
+/* 달 이미지 주변 큰 아우라 효과 */
+.moon-aura {
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, /* 중앙에서 바깥으로 퍼지는 그라디언트 */
+    rgba(180, 100, 255, 0.5) 0%,
+    rgba(140, 60, 255, 0.3) 30%,
+    rgba(100, 40, 200, 0.1) 60%,
+    transparent 75%
+  );
+  filter: blur(20px); /* 흐리게 처리로 부드러운 빛 표현 */
+  animation: auraGlow 3s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* 달 이미지 주변 작은 아우라 효과 (역방향 재생) */
+.moon-aura2 {
+  position: absolute;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(220, 150, 255, 0.6) 0%,
+    rgba(180, 100, 255, 0.3) 40%,
+    transparent 70%
+  );
+  filter: blur(10px);
+  animation: auraGlow 2s ease-in-out infinite reverse; /* reverse = 반대 방향 */
+  z-index: 0;
+}
+
+/* auraGlow = 크기가 1 → 1.08 → 1 반복 (숨쉬는 효과) */
+@keyframes auraGlow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50%       { opacity: 1; transform: scale(1.08); }
+}
+
+/* mix-blend-mode: screen = 배경과 자연스럽게 합성 (검정 부분이 투명해짐) */
+.star-image { width: 250px; position: relative; z-index: 1; mix-blend-mode: screen; }
+.mountain-back { position: absolute; bottom: 0; left: -5%; width: 75%; z-index: 4; mix-blend-mode: screen; }
+.mountain-front { position: absolute; bottom: 0; right: -5%; width: 35%; z-index: 5; mix-blend-mode: screen; }
+
+/* =====================================================================
+   [Projects 섹션]
+   margin-top: -20vh = 위 섹션과 겹치게 해서 자연스러운 전환
+   z-index: 6 = 산 이미지(z-index:5) 위에 표시
+   ===================================================================== */
+.projects-section {
+  background-color: #000000;
+  padding: 55px 30px 30px;
+  margin-top: -20vh; /* 위로 당겨서 산 섹션과 자연스럽게 연결 */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 6;
+}
+
+/* 연보라색 액자 컨테이너 */
+.projects-frame {
+  width: 100%;
+  min-height: calc(100vh - 60px); /* calc() = 계산식으로 크기 설정 */
+  padding: 90px 90px 100px;
+  background-color: #c8b3de; /* 연보라색 */
+  border: 1px solid rgba(80, 40, 120, 0.35);
+  box-shadow: /* 안쪽 빛 + 바깥 그림자 2겹 */
+    0 0 40px rgba(212, 187, 239, 0.25),
+    0 30px 80px rgba(0, 0, 0, 0.45);
+  position: relative;
+  overflow: hidden;
+}
+
+/* =====================================================================
+   [슬라이더 구조]
+   .projects-slider-wrap = 화살표 + 슬라이더 가로 배치
+   .projects-slider = 슬라이드가 보이는 뷰포트 (overflow:hidden으로 밖 숨김)
+   .projects-track = 모든 슬라이드를 가로로 나열한 트랙 (JS GSAP이 X축 이동)
+   .projects-slide = 카드 1개짜리 슬라이드 (min-width:100% = 뷰포트와 같은 크기)
+   ===================================================================== */
+.projects-slider-wrap { display: flex; align-items: center; gap: 20px; width: 100%; }
+.projects-slider { flex: 1; overflow: hidden; } /* overflow:hidden = 현재 슬라이드만 보임 */
+.projects-track { display: flex; transition: none; width: 100%; } /* JS GSAP이 X 이동 제어 */
+.projects-slide { display: flex; justify-content: center; align-items: flex-start; min-width: 100%; flex-shrink: 0; padding: 0 20px; }
+
+/* 화살표 버튼 스타일 */
+.slider-arrow {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: 48px; height: 48px;
+  border-radius: 50%; /* 원형 버튼 */
+  cursor: pointer;
+  flex-shrink: 0; /* flex에서 크기 줄어들지 않게 */
+  transition: border-color 0.3s, color 0.3s, opacity 0.3s;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* 점 네비게이션 - 현재 슬라이드 위치 표시 */
+.slider-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(212, 187, 239, 0.25);
+  border: none; cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  padding: 0;
+}
+
+/* 현재 활성화된 점 = 더 크고 진하게 */
+.slider-dot.active { background: #D4BBEF; transform: scale(1.4); }
+
+/* =====================================================================
+   [프로젝트 카드]
+   JS에서 동적으로 생성되는 카드 요소
+   처음엔 opacity:0 → GSAP 애니메이션으로 나타남
+   hover 시 위로 떠오르는 효과
+   ===================================================================== */
+.project-card {
+  min-height: 230px;
+  border: 1px solid rgba(80, 40, 120, 0.35);
+  border-radius: 22px;
+  padding: 30px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0; /* 처음엔 숨김 - JS GSAP으로 나타남 */
+  cursor: pointer;
+  background-color: #d8c7e8;
+  box-shadow: 0 12px 35px rgba(80, 40, 120, 0.18);
+  transition: transform 0.35s ease, border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* 호버 시 카드가 위로 떠오르는 효과 */
+.project-card:hover {
+  transform: translateY(-8px); /* 8px 위로 이동 */
+  border-color: rgba(80, 40, 120, 0.65);
+  background-color: #e2d4ef;
+  box-shadow: 0 18px 45px rgba(80, 40, 120, 0.28);
+}
+
+/* =====================================================================
+   [Contact 섹션]
+   HTML의 <section id="contact">
+   ===================================================================== */
+.contact-section {
+  background-color: #000000;
+  min-height: auto; height: auto;
+  padding: 70px 80px;
+  border-top: 1px solid rgba(212, 187, 239, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* =====================================================================
+   [.tech-tag - 기술 태그]
+   JS에서 동적으로 생성되어 hero 섹션에 배치
+   position: absolute = hero 섹션 기준 절대 위치
+   pointer-events: none = 클릭 이벤트 방해 안 함
+   ===================================================================== */
+.tech-tag {
+  position: absolute; /* JS에서 left/top % 값으로 위치 지정 */
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: rgba(212, 187, 239, 0.85);
+  letter-spacing: 3px;
+  pointer-events: none; /* 클릭 통과 */
+  z-index: 3;
+  text-shadow: /* 보라색 글로우 효과 */
+    0 0 10px rgba(212, 187, 239, 0.6),
+    0 0 20px rgba(212, 187, 239, 0.3);
+}
+
+/* =====================================================================
+   [.spark - 스킬 타이틀 옆 별 ✦]
+   JS에서 동적으로 생성되어 .skill-title 뒤에 붙음
+   GSAP으로 반짝이는 애니메이션 적용
+   ===================================================================== */
+.spark {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: 42px;
+  color: #D4BBEF;
+  pointer-events: none;
+  text-shadow: /* 강한 보라색 글로우 3겹 */
+    0 0 10px rgba(212, 187, 239, 1),
+    0 0 30px rgba(212, 187, 239, 0.8),
+    0 0 60px rgba(212, 187, 239, 0.4);
+  vertical-align: middle; /* 텍스트와 세로 중앙 정렬 */
+}
